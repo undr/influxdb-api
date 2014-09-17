@@ -1,0 +1,49 @@
+module Influxdb
+  module Api
+    class Client
+      class ConnectionPool
+        def initialize
+          @connections = build_connections
+        end
+
+        def connections
+          @connections.reject{|c| c.dead? }
+        end
+        alias :alive :connections
+
+        def dead
+          @connections.select{|c| c.dead? }
+        end
+
+        def all
+          @connections
+        end
+
+        def each(&block)
+          connections.each(&block)
+        end
+
+        def get_connection
+          config.selector.select_from(alive)
+        end
+
+        def build_connections
+          config.hosts.map do |host|
+            Connection.new(
+              host,
+              ::Faraday::Connection.new(
+                host,
+                config.connection_options,
+                &config.connection_block
+              )
+            )
+          end
+        end
+
+        def config
+          Influxdb::Api.config
+        end
+      end
+    end
+  end
+end
