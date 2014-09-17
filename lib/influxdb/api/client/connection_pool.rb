@@ -24,6 +24,9 @@ module Influxdb
         end
 
         def get_connection
+          if connections.empty? && dead_connection = dead.sort{|a, b| a.failures <=> b.failures }.first
+            dead_connection.alive!
+          end
           config.selector.select_from(alive)
         end
 
