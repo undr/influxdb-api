@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = Influxdb::Api::VERSION
   spec.authors       = ["undr"]
   spec.email         = ["undr@yandex.ru"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
-  spec.homepage      = ""
+  spec.description   = %q{Ruby client for InfluxDB }
+  spec.summary       = %q{Ruby client for InfluxDB }
+  spec.homepage      = "https://github.com/undr/influxdb-api"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
