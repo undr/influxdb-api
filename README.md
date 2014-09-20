@@ -1,4 +1,4 @@
-# InfluxdbClient
+# Ruby client for InfluxDB
 
 ## Installation
 
