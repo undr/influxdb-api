@@ -2,7 +2,10 @@ module Influxdb
   module Api
     class Client
       class ConnectionPool
-        def initialize
+        attr_reader :config
+
+        def initialize(config = Influxdb::Api.config)
+          @config = config
           @connections = build_connections
         end
 
@@ -38,13 +41,10 @@ module Influxdb
                 host,
                 config.connection_options,
                 &config.connection_block
-              )
+              ),
+              config
             )
           end
-        end
-
-        def config
-          Influxdb::Api.config
         end
       end
     end

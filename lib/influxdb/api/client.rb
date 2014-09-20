@@ -1,18 +1,25 @@
 module Influxdb
   module Api
     class Client
-      def initialize
-        @connection_pool = ConnectionPool.new
+      include Namespaces
+
+      attr_reader :config
+
+      def initialize(config = Influxdb::Api.config)
+        @config = config
+        @connection_pool = ConnectionPool.new(config)
         @last_request_at = Time.now
         @resurrect_after = 60
       end
 
       def perform_request(method, path, params = {}, body = nil, &block)
+        method = method.downcase.to_sym unless method.is_a?(Symbol)
+
         response = with_retry(path, params) do |connection, url|
           connection.basic_auth(config.user, config.password)
           headers = { 'Content-Type' => 'application/json' }
 
-          connection.run_request(method.downcase.to_sym, url, (body ? convert_to_json(body) : nil), headers, &block)
+          connection.run_request(method, url, (body ? convert_to_json(body) : nil), headers, &block)
         end
 
         raise_transport_error(response) if response.status.to_i >= 300
@@ -80,10 +87,6 @@ module Influxdb
 
       def logger
         config.logger
-      end
-
-      def config
-        Influxdb::Api.config
       end
     end
   end

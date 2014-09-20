@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 describe Influxdb::Api::Client::Connection do
-  subject{ Influxdb::Api::Client::Connection.new('http://localhost:8086', nil) }
+  let(:config){ Influxdb::Api::Configuration.new }
+
+  subject{ Influxdb::Api::Client::Connection.new('http://localhost:8086', nil, config) }
 
   describe '#full_path' do
     let(:path){ '/some/path' }

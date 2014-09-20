@@ -2,9 +2,10 @@ module Influxdb
   module Api
     class Client
       class Connection
-        attr_reader :host, :connection, :failures, :dead_since
+        attr_reader :host, :connection, :failures, :dead_since, :config
 
-        def initialize(host, connection)
+        def initialize(host, connection, config = Influxdb::Api.config)
+          @config = config
           @host = host
           @connection = connection
           @failures = 0
@@ -47,10 +48,6 @@ module Influxdb
 
         def to_s
           "<#{self.class.name} host: #{host} (#{dead? ? 'dead since ' + dead_since.to_s : 'alive'})>"
-        end
-
-        def config
-          Influxdb::Api.config
         end
       end
     end

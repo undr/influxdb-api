@@ -89,8 +89,7 @@ module Influxdb
       end
 
       def hosts=(value)
-        value = [value] if value.is_a?(Hash)
-        @hosts = Array(value).map(&method(:normalize_host))
+        @hosts = Array.wrap(value).map(&method(:normalize_host))
       end
 
       def connection_block(&block)
@@ -99,6 +98,12 @@ module Influxdb
         else
           @connection_block
         end
+      end
+
+      def dup
+        clone = super
+        clone.connection_options = connection_options.dup
+        clone
       end
 
       private

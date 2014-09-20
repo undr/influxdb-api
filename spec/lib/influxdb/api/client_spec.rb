@@ -1,10 +1,8 @@
 require 'spec_helper'
 
 describe Influxdb::Api::Client do
-  let(:client){ Influxdb::Api::Client.new }
-
-  before{ Influxdb::Api.config = Influxdb::Api::Configuration.new }
-  after{ Influxdb::Api.config = Influxdb::Api::Configuration.new }
+  let(:config){ Influxdb::Api::Configuration.new }
+  let(:client){ Influxdb::Api::Client.new(config) }
 
   describe '#perform_request' do
     let(:pool){ client.send(:connection_pool) }
@@ -48,8 +46,8 @@ describe Influxdb::Api::Client do
 
     context 'perform GET request with transport error if connection pool more then retry number' do
       before do
-        Influxdb::Api.config.hosts = ['localhost', 'influxdb1.server.com', 'influxdb2.server.com']
-        Influxdb::Api.config.retry_on_failure = 2
+        config.hosts = ['localhost', 'influxdb1.server.com', 'influxdb2.server.com']
+        config.retry_on_failure = 2
 
         stub_request(:get, 'http://root:root@localhost:8086/path').
           to_raise(::Faraday::Error::ConnectionFailed)
@@ -69,8 +67,8 @@ describe Influxdb::Api::Client do
 
     context 'perform GET request with transport error if connection pool less then retry number' do
       before do
-        Influxdb::Api.config.hosts = ['localhost', 'influxdb1.server.com', 'influxdb2.server.com']
-        Influxdb::Api.config.retry_on_failure = 4
+        config.hosts = ['localhost', 'influxdb1.server.com', 'influxdb2.server.com']
+        config.retry_on_failure = 4
 
         stub_request(:get, 'http://root:root@localhost:8086/path').
           to_raise(::Faraday::Error::ConnectionFailed)
@@ -90,8 +88,8 @@ describe Influxdb::Api::Client do
 
     context 'perform GET request with 2 transport errors and success' do
       before do
-        Influxdb::Api.config.hosts = ['localhost', 'influxdb1.server.com', 'influxdb2.server.com']
-        Influxdb::Api.config.retry_on_failure = 4
+        config.hosts = ['localhost', 'influxdb1.server.com', 'influxdb2.server.com']
+        config.retry_on_failure = 4
 
         stub_request(:get, 'http://root:root@localhost:8086/path').
           to_raise(::Faraday::Error::ConnectionFailed)

@@ -16,7 +16,14 @@ Or install it yourself as:
 
 ## Usage
 
-### Configurations
+### Client configuration
+
+There are two ways to obtain a fully-configured client:
+
+- Get default client with default configuration, or
+- Create client with custom configuration.
+
+To configure default client you should pass a block to the method `Influxdb::Api.configure`.
 
 ```ruby
 Influxdb::Api.configure do |c|
@@ -43,16 +50,145 @@ Influxdb::Api.configure do |c|
     conn.adapter :typhoeus
   end
 
+  # Turn on or turn off logging
   c.log = true
   # or
   c.logger = Logger.new('./log/influxdb-api.log')
 
-  # Custom serializer. It should respond to methods #load and #dump (Default: MultiJson)
+  # Custom serializer. It should respond to methods #load and #dump
+  # Default: MultiJson
   c.serializer = CustomJsonSerializer.new
 
-  # Connection selector. Default: Influxdb::Api::Selector::RoundRobin
-  c.selector = Influxdb::Api::Selector::Random
+  # Connection selector.
+  # Default: Influxdb::Api::Client::Selector::RoundRobin
+  c.selector = Influxdb::Api::Client::Selector::Random.new
 end
+
+client = Influxdb::Api.client
+
+client.config.user
+# => "root"
+client.config.retry_on_failure
+# => 3
+```
+
+Also, you can create client with custom configuration. Configuration will be inherited from default configuration and all needed options will be overridden.
+
+```ruby
+client = Influxdb::Api.new do |c|
+  c.user = 'dbuser'
+  c.password = 'dbpassword'
+end
+
+client.config.user
+# => "dbuser"
+client.config.retry_on_failure
+# => 3
+```
+
+### Available methods
+
+```ruby
+client = Influxdb::Api.client
+
+client.databases.all
+# => [{"name"=>"dbname"}]
+client.databases.create('dbname')
+# => true
+client.databases.delete('dbname')
+# => true
+
+database = client.databases('dbname')
+
+database.series.all
+# => ["cpu"]
+database.series.execute('select * from /.*/')
+# => {"cpu"=>[{"time"=>1411173197058, "sequence_number"=>200001, "value"=>13.5}]}
+database.series.raw_execute('select * from /.*/')
+# => [{"name"=>"cpu", "columns"=>["time", "sequence_number", "value"], "points"=>[[1411173197058, 200001, 13.5]]}]
+database.series.write(:cpu, value: 13.5)
+# => true
+database.series.write(:cpu, [{ value: 13.5 }, { value: 10.0 }])
+# => true
+database.series.write(cpu: { value: 43.9 }, memory: { value: 2500853760 })
+# => true
+database.series.delete('seriesname')
+# => true
+
+database.users.all
+# => [{"name"=>"username", "isAdmin"=>true}]
+database.users.find('username')
+# => {"name"=>"username", "isAdmin"=>true}
+database.users.create(name: 'username', password: 'mypass', isAdmin: true)
+# => true
+database.users.update('username', admin: false)
+# => true
+database.users.delete('username')
+# => true
+
+database.continuous_queries.all
+# => [{"id"=>1, "query"=>"select MEAN(user) as user_mean from cpu group by time(1m) into cpu.1m.user_mean"}]
+database.continuous_queries.create('select MEAN(user) as user_mean from cpu group by time(1m) into cpu.1m.user_mean')
+# => true
+database.continuous_queries.delete(1)
+# => true
+
+# I haven't tested these methods yet. They aren't implemented on my influxdb server.
+database.shard_spaces.all
+database.shard_spaces.create(attrs)
+database.shard_spaces.update('spacename', attrs)
+database.shard_spaces.delete('spacename')
+
+client.cluster_admins.all
+# => [{"name"=>"root"}]
+client.cluster_admins.create(name: 'username', password: 'pass')
+# => true
+client.cluster_admins.update('username', password: 'newpass')
+# => true
+client.cluster_admins.delete('username')
+# => true
+
+client.servers.all
+# => [{"id"=>1, "protobufConnectString"=>"undr.local:8099"}]
+client.servers.delete(1)
+# => true
+
+client.shards.all
+# => {"longTerm"=>[],
+#  "shortTerm"=>
+#   [{"endTime"=>1411603200, "id"=>2, "serverIds"=>[1], "startTime"=>1410998400}, {"endTime"=>1410998400, "id"=>1, "serverIds"=>[1], "startTime"=>1410393600}]}
+
+client.shards.create(attrs)
+# => true
+client.shards.delete(1)
+# => true
+
+v = client.version
+# => "InfluxDB v0.7.3 (git: 216a3eb) (leveldb: 1.15)"
+v > '0.7.6'
+# => false
+v > '0.7'
+# => true
+v.major
+# => 0
+v.minor
+# => 7
+v.patch
+# => 3
+v.git
+# => "216a3eb"
+v.engine
+# "leveldb: 1.15.0"
+v.engine.major
+# => 1
+v.engine.minor
+# => 15
+v.engine.patch
+# => 0
+client.sync?
+# => true
+client.interfaces
+# => ["default"]
 ```
 
 ## Contributing

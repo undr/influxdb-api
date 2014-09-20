@@ -1,7 +1,7 @@
 require 'bundler'
 Bundler.require(:default, :test)
 
-WebMock.disable_net_connect!(allow_localhost: true)
+WebMock.disable_net_connect!(allow_localhost: false)
 
 RSpec.configure do |config|
   config.mock_with :rspec
