@@ -1,18 +1,26 @@
 # Ruby client for InfluxDB
 
+[![Build Status](https://travis-ci.org/undr/influxdb-api.svg?branch=master)](https://travis-ci.org/undr/influxdb-api) [![Code Climate](https://codeclimate.com/github/undr/influxdb-api/badges/gpa.svg)](https://codeclimate.com/github/undr/influxdb-api)
+
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'influxdb-api'
+```ruby
+gem 'influxdb-api'
+```
 
 And then execute:
 
-    $ bundle
+```
+$ bundle
+```
 
 Or install it yourself as:
 
-    $ gem install influxdb-api
+```
+$ gem install influxdb-api
+```
 
 ## Usage
 
