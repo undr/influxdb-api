@@ -1,6 +1,6 @@
 # Ruby client for InfluxDB
 
-[![Build Status](https://travis-ci.org/undr/influxdb-api.svg?branch=master)](https://travis-ci.org/undr/influxdb-api) [![Code Climate](https://codeclimate.com/github/undr/influxdb-api/badges/gpa.svg)](https://codeclimate.com/github/undr/influxdb-api)
+[![Build Status](https://travis-ci.org/undr/influxdb-api.svg?branch=master)](https://travis-ci.org/undr/influxdb-api) [![Code Climate](https://codeclimate.com/github/undr/influxdb-api/badges/gpa.svg)](https://codeclimate.com/github/undr/influxdb-api) [![Gem Version](https://badge.fury.io/rb/influxdb-api.svg)](http://badge.fury.io/rb/influxdb-api)
 
 ## Installation
 
