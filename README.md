@@ -141,8 +141,9 @@ database.continuous_queries.create('select MEAN(user) as user_mean from cpu grou
 database.continuous_queries.delete(1)
 # => true
 
-# I haven't tested these methods yet. They aren't implemented on my influxdb server.
 database.shard_spaces.all
+# => [{"name"=>"default", "database"=>"influxdb_api", "regex"=>"/.*/", "retentionPolicy"=>"inf", "shardDuration"=>"7d", "replicationFactor"=>1, "split"=>1},
+#  {"name"=>"default", "database"=>"influxdb_ruby", "regex"=>"/.*/", "retentionPolicy"=>"inf", "shardDuration"=>"7d", "replicationFactor"=>1, "split"=>1}]
 database.shard_spaces.create(attrs)
 database.shard_spaces.update('spacename', attrs)
 database.shard_spaces.delete('spacename')
@@ -157,7 +158,16 @@ client.cluster_admins.delete('username')
 # => true
 
 client.servers.all
-# => [{"id"=>1, "protobufConnectString"=>"undr.local:8099"}]
+# => [{"id"=>1,
+#  "isLeader"=>true,
+#  "isUp"=>false,
+#  "leaderRaftConnectString"=>"http://undr.local:8090",
+#  "leaderRaftName"=>"97f5a3f53052a5a7",
+#  "protobufConnectString"=>"undr.local:8099",
+#  "raftConnectionString"=>"http://undr.local:8090",
+#  "raftName"=>"97f5a3f53052a5a7",
+#  "state"=>4,
+#  "stateName"=>"Potential"}]
 client.servers.delete(1)
 # => true
 
