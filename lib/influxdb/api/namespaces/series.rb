@@ -7,7 +7,9 @@ module Influxdb
         undef_method(:create) if method_defined?(:create)
 
         def all
-          raw_execute('list series').map{|s| s['name']}
+          raw_execute('SELECT * FROM /.*/ LIMIT 1').map{|s| s['name']}
+        rescue Client::Errors::BadRequest => e
+          []
         end
 
         def write(*series)
