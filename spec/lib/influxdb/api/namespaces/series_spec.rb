@@ -14,7 +14,7 @@ describe Influxdb::Api::Namespaces::Series do
     }]) }
 
     before do
-      stub_request(:get, 'http://root:root@localhost:8086/db/dbname/series?q=list%20series').
+      stub_request(:get, 'http://root:root@localhost:8086/db/dbname/series?q=SELECT%20*%20FROM%20/.*/%20LIMIT%201').
         to_return(status: 200, body: response, headers: { 'Content-Type' => 'application/json' })
     end
 
