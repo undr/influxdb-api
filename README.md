@@ -182,19 +182,19 @@ client.shards.delete(1)
 # => true
 
 v = client.version
-# => "InfluxDB v0.7.3 (git: 216a3eb) (leveldb: 1.15)"
-v > '0.7.6'
+# => "InfluxDB v0.8.3 (git: fbf9a474055051c64e947f2a071388ee009a08d5) (leveldb: 1.15)"
+v > '0.8.6'
 # => false
-v > '0.7'
+v > '0.8'
 # => true
 v.major
 # => 0
 v.minor
-# => 7
+# => 8
 v.patch
 # => 3
 v.git
-# => "216a3eb"
+# => "fbf9a474055051c64e947f2a071388ee009a08d5"
 v.engine
 # "leveldb: 1.15.0"
 v.engine.major
