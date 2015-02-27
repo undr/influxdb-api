@@ -7,8 +7,12 @@ rvm:
 env:
   - INFLUXDB_VERSION=0.7.3
   - INFLUXDB_VERSION=0.8.3
+  - INFLUXDB_VERSION=0.8.8
 before_install:
   - wget http://s3.amazonaws.com/influxdb/influxdb_${INFLUXDB_VERSION}_amd64.deb
   - sudo dpkg -i influxdb_${INFLUXDB_VERSION}_amd64.deb
   - sudo /etc/init.d/influxdb start
   - sleep 8
+matrix:
+  allow_failures:
+    - env: "INFLUXDB_VERSION=0.8.8"
