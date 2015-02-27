@@ -1,23 +1,20 @@
 require 'spec_helper'
 
-describe 'series' do
+describe 'series', integration: true do
   let(:config){ Influxdb::Api::Configuration.new }
   let(:client){ Influxdb::Api::Client.new(config) }
 
   subject{ client.databases('db_name').series }
 
-  before(:all) do
-    WebMock.disable_net_connect!(allow_localhost: true)
-    Influxdb::Api.client.databases.create('db_name')
+  before do
+    client.databases.create('db_name')
+    subject.all.each{|name| subject.delete(name) }
   end
 
-  after(:all) do
-    Influxdb::Api.client.databases.delete('db_name')
-    WebMock.disable_net_connect!(allow_localhost: false)
+  after do
+    subject.all.each{|name| subject.delete(name) }
+    client.databases.delete('db_name')
   end
-
-  before{ subject.all.each{|name| subject.delete(name) } }
-  after{ subject.all.each{|name| subject.delete(name) } }
 
   def series_data(name)
     name = name.to_s

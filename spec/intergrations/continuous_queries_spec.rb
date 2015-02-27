@@ -1,23 +1,20 @@
 require 'spec_helper'
 
-describe 'users' do
+describe 'continuous_queries', integration: true do
   let(:config){ Influxdb::Api::Configuration.new }
   let(:client){ Influxdb::Api::Client.new(config) }
 
   subject{ client.databases('db_name').continuous_queries }
 
-  before(:all) do
-    WebMock.disable_net_connect!(allow_localhost: true)
-    Influxdb::Api.client.databases.create('db_name')
+  before do
+    client.databases.create('db_name')
+    subject.all.each{|q| subject.delete(q['id']) }
   end
 
-  after(:all) do
-    Influxdb::Api.client.databases.delete('db_name')
-    WebMock.disable_net_connect!(allow_localhost: false)
+  after do
+    subject.all.each{|q| subject.delete(q['id']) }
+    client.databases.delete('db_name')
   end
-
-  before{ subject.all.each{|q| subject.delete(q['id']) } }
-  after{ subject.all.each{|q| subject.delete(q['id']) } }
 
   describe '.all' do
     context 'when there are no continuous queries' do

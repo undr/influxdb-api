@@ -1,19 +1,17 @@
 require 'spec_helper'
 
-describe 'databases' do
+describe 'databases', integration: true do
   let(:config){ Influxdb::Api::Configuration.new }
   let(:client){ Influxdb::Api::Client.new(config) }
 
   subject{ client.databases }
 
   before do
-    WebMock.disable_net_connect!(allow_localhost: true)
     subject.all.each{|db| subject.delete(db['name']) }
   end
 
   after do
     subject.all.each{|db| subject.delete(db['name']) }
-    WebMock.disable_net_connect!(allow_localhost: false)
   end
 
   describe '.all' do

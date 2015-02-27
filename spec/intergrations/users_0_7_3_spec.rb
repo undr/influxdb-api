@@ -1,23 +1,20 @@
 require 'spec_helper'
 
-describe 'users' do
+describe 'users', '0.7.3' => true, integration: true do
   let(:config){ Influxdb::Api::Configuration.new }
   let(:client){ Influxdb::Api::Client.new(config) }
 
   subject{ client.databases('db_name').users }
 
-  before(:all) do
-    WebMock.disable_net_connect!(allow_localhost: true)
-    Influxdb::Api.client.databases.create('db_name')
+  before do
+    client.databases.create('db_name')
+    subject.all.each{|u| subject.delete(u['name']) }
   end
 
-  after(:all) do
-    Influxdb::Api.client.databases.delete('db_name')
-    WebMock.disable_net_connect!(allow_localhost: false)
+  after do
+    subject.all.each{|u| subject.delete(u['name']) }
+    client.databases.delete('db_name')
   end
-
-  before{ subject.all.each{|u| subject.delete(u['name']) } }
-  after{ subject.all.each{|u| subject.delete(u['name']) } }
 
   describe '.all' do
     context 'when there are no users' do
@@ -34,8 +31,8 @@ describe 'users' do
 
       it 'returns the list of users' do
         expect(subject.all).to match_array([
-          { 'name' => 'username1', 'isAdmin' => false, 'writeTo' => '.*', 'readFrom' => '.*' },
-          { 'name' => 'username2', 'isAdmin' => false, 'writeTo' => '.*', 'readFrom' => '.*' }
+          { 'name' => 'username1', 'isAdmin' => false },
+          { 'name' => 'username2', 'isAdmin' => false }
         ])
       end
     end
@@ -43,10 +40,7 @@ describe 'users' do
 
   describe '.create' do
     it 'creates a new user with given name' do
-      subject.create(name: 'username', password: 'mypass')
-      expect(subject.all.include?(
-        'name' => 'username', 'isAdmin' => false, 'writeTo' => '.*', 'readFrom' => '.*'
-      )).to be_truthy
+      expect{ subject.create(name: 'username', password: 'mypass') }.to change{ subject.all.size }.from(0).to(1)
     end
 
     context 'when there is user with the same name' do
@@ -63,16 +57,9 @@ describe 'users' do
   describe '.update' do
     context 'when user does not exist' do
       it 'raises error' do
-        expect{ subject.update('username', writeTo: 'log\..*', readFrom: '.*') }.to raise_error(
+        expect{ subject.update('username', admin: true) }.to raise_error(
           Influxdb::Api::Client::Errors::BadRequest, '[400] Invalid username username'
         )
-      end
-
-      context 'and did not pass both permissions' do
-        it 'does nothing' do
-          subject.update('username', writeTo: 'log\..*')
-          expect(subject.all).to eq([])
-        end
       end
     end
 
@@ -80,19 +67,8 @@ describe 'users' do
       before{ subject.create(name: 'username', password: 'mypass') }
 
       it 'updates user attributes' do
-        subject.update('username', writeTo: 'log\..*', readFrom: '.*')
-        expect(subject.all).to eq([
-          { 'name' => 'username', 'isAdmin' => false, 'writeTo' => 'log\..*', 'readFrom' => '.*' }
-        ])
-      end
-
-      context 'and did not pass both permissions' do
-        it 'does nothing' do
-          subject.update('username', writeTo: 'log\..*')
-          expect(subject.all).to eq([
-            { 'name' => 'username', 'isAdmin' => false, 'writeTo' => '.*', 'readFrom' => '.*' }
-          ])
-        end
+        subject.update('username', admin: true)
+        expect(subject.all).to eq([{ 'name' => 'username', 'isAdmin' => true }])
       end
     end
   end
@@ -108,9 +84,7 @@ describe 'users' do
       before{ subject.create(name: 'username', password: 'mypass') }
 
       it 'returns user' do
-        expect(subject.find('username')).to eq(
-          'name' => 'username', 'isAdmin' => false, 'writeTo' => '.*', 'readFrom' => '.*'
-        )
+        expect(subject.find('username')).to eq('name' => 'username', 'isAdmin' => false)
       end
     end
   end
