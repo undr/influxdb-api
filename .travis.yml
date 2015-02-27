@@ -4,3 +4,11 @@ rvm:
   - 2.0.0
   - 2.1.1
   - rbx-2
+env:
+  - INFLUXDB_VERSION=0.7.3
+  - INFLUXDB_VERSION=0.8.8
+before_install:
+  - wget http://s3.amazonaws.com/influxdb/influxdb_${INFLUXDB_VERSION}_amd64.deb
+  - sudo dpkg -i influxdb_${INFLUXDB_VERSION}_amd64.deb
+  - sudo /etc/init.d/influxdb start
+  - sleep 8

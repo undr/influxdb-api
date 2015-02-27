@@ -35,6 +35,9 @@ module Influxdb
           params = { q: query_string }
           params[:time_precision] = time_precision if time_precision
           perform_get(resource_path, params)
+        rescue Influxdb::Api::Client::Errors::BadRequest => e
+          raise e unless e.message =~ /Couldn\'t look up columns/
+          []
         end
 
         private
