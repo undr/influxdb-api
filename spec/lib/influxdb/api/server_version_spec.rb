@@ -7,6 +7,7 @@ describe Influxdb::Api::ServerVersion do
 
   describe '#to_s' do
     specify{ expect(subject.to_s).to eq(source) }
+    specify{ expect(subject.to_s(:mini)).to eq('0.7.3') }
   end
 
   describe '#major' do

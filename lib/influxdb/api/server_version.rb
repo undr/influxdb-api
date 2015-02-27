@@ -34,8 +34,12 @@ module Influxdb
         [major <=> other_major, minor <=> other_minor, patch <=> other_patch].detect{|c| c != 0 } || 0
       end
 
-      def to_s
-        source
+      def to_s(format = :full)
+        if format == :mini
+          "#{major}.#{minor}.#{patch}"
+        else
+          source
+        end
       end
 
       def inspect
