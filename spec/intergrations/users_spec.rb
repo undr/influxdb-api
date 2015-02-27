@@ -33,7 +33,7 @@ describe 'users' do
       end
 
       it 'returns the list of users' do
-        expect(subject.all).to eq([
+        expect(subject.all).to match_array([
           { 'name' => 'username1', 'isAdmin' => false, 'writeTo' => '.*', 'readFrom' => '.*' },
           { 'name' => 'username2', 'isAdmin' => false, 'writeTo' => '.*', 'readFrom' => '.*' }
         ])

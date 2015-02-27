@@ -38,7 +38,7 @@ describe 'series' do
       end
 
       it 'returns the list of series' do
-        expect(subject.all).to eq(['name1', 'name2'])
+        expect(subject.all).to match_array(['name1', 'name2'])
       end
     end
   end

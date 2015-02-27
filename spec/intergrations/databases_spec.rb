@@ -30,7 +30,7 @@ describe 'databases' do
       end
 
       it 'returns the list of databases' do
-        expect(subject.all).to eq([{ 'name' => 'db_name1' }, { 'name' => 'db_name2' }])
+        expect(subject.all).to match_array([{ 'name' => 'db_name1' }, { 'name' => 'db_name2' }])
       end
     end
   end

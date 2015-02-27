@@ -36,7 +36,7 @@ describe 'users' do
       end
 
       it 'returns the list of users' do
-        expect(subject.all).to eq([
+        expect(subject.all).to match_array([
           { 'id' => 1, 'query' => continuous_query1 }, { 'id' => 2, 'query' => continuous_query2 }
         ])
       end
@@ -56,7 +56,7 @@ describe 'users' do
 
       it 'creates one more' do
         subject.create(continuous_query)
-        expect(subject.all).to eq([
+        expect(subject.all).to match_array([
           { 'id' => 1, 'query' => continuous_query }, { 'id' => 2, 'query' => continuous_query }
         ])
       end
