@@ -15,4 +15,5 @@ before_install:
   - sleep 8
 matrix:
   allow_failures:
+    - rvm: rbx-2
     - env: "INFLUXDB_VERSION=0.8.8"
