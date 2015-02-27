@@ -68,7 +68,7 @@ describe 'series', integration: true do
 
      context 'when series does not exist', version: '>0.8.3' do
       it 'raises error' do
-        expect(subject.execute('SELECT * FROM name')).to raise_error(
+        expect{ subject.execute('SELECT * FROM name') }.to raise_error(
           Influxdb::Api::Client::Errors::BadRequest, "[400] Couldn't find series: name"
         )
       end
