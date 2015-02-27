@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'continuous_queries', integration: true do
+describe 'continuous_queries', version: '<=0.8.3', integration: true do
   let(:config){ Influxdb::Api::Configuration.new }
   let(:client){ Influxdb::Api::Client.new(config) }
 

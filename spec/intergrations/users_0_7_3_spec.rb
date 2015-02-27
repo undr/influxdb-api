@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'users', '0.7.3' => true, integration: true do
+describe 'users', version: '<0.8.0', integration: true do
   let(:config){ Influxdb::Api::Configuration.new }
   let(:client){ Influxdb::Api::Client.new(config) }
 

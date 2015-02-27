@@ -42,11 +42,13 @@ describe 'series', integration: true do
 
   describe '.write' do
     it 'writes row into the series' do
-      expect{ subject.write(:name, v: 1) }.to change{ series_data(:name).size }.from(0).to(1)
+      subject.write(:name, v: 1)
+      expect(series_data(:name).size).to eq(1)
     end
 
     it 'writes multiple rows into the series' do
-      expect{ subject.write(:name, [{ v: 1 }, { v: 2 }]) }.to change{ series_data(:name).size }.from(0).to(2)
+      subject.write(:name, [{ v: 1 }, { v: 2 }])
+      expect(series_data(:name).size).to eq(2)
     end
 
     it 'writes multiple rows into multiple series' do
@@ -58,9 +60,17 @@ describe 'series', integration: true do
   end
 
   describe '.execute' do
-    context 'when series does not exist' do
+     context 'when series does not exist', version: '<=0.8.3' do
       it 'returns empty Hash' do
         expect(subject.execute('SELECT * FROM name')).to eq({})
+      end
+    end
+
+     context 'when series does not exist', version: '>0.8.3' do
+      it 'raises error' do
+        expect(subject.execute('SELECT * FROM name')).to raise_error(
+          Influxdb::Api::Client::Errors::BadRequest, "[400] Couldn't find series: name"
+        )
       end
     end
 

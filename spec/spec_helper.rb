@@ -1,7 +1,6 @@
 require 'bundler'
 Bundler.require(:default, :test)
-
-VERSIONS = ['0.7.3', '0.8.3', '0.8.8']
+require 'support/version_resolver'
 
 def allow_localhost
   WebMock.disable_net_connect!(allow_localhost: true)
@@ -10,33 +9,16 @@ ensure
   WebMock.disable_net_connect!(allow_localhost: false)
 end
 
-def get_version
-  allow_localhost do
-    if ENV['INFLUXDB_VERSION']
-      [ENV['INFLUXDB_VERSION'], ENV['INFLUXDB_VERSION']]
-    else
-      v = Influxdb::Api.client.version
-      if v < '0.8'
-        ['0.7.3', v.to_s(:mini)]
-      elsif v >= '0.8.0'&& v <= '0.8.3'
-        ['0.8.3', v.to_s(:mini)]
-      else
-        ['0.8.8', v.to_s(:mini)]
-      end
-    end
-  end
-end
+version_resolver = allow_localhost{ VersionResolver.new(ENV['INFLUXDB_VERSION']) }
 
-INFLUXDB_VERSION, REAL_INFLUXDB_VERSION = get_version
-
-puts "InfluxDB: #{INFLUXDB_VERSION} (#{REAL_INFLUXDB_VERSION})"
+puts "InfluxDB: #{version_resolver.server_version}"
 
 WebMock.disable_net_connect!(allow_localhost: false)
 
 RSpec.configure do |config|
   config.mock_with :rspec
-
-  config.filter_run_excluding((VERSIONS - [INFLUXDB_VERSION]).map{|v| { v => true } }.inject(&:merge))
+  config.filter_run_excluding version: ->(v){ !version_resolver.fit?(v) }
+  #config.filter_run_excluding((VERSIONS - [INFLUXDB_VERSION]).map{|v| { v => true } }.inject(&:merge))
 
   config.around :each, integration: true do |example|
     allow_localhost{ example.run }
