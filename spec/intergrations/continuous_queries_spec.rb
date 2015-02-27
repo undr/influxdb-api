@@ -16,8 +16,8 @@ describe 'users' do
     WebMock.disable_net_connect!(allow_localhost: false)
   end
 
-  before{ subject.all.each{|u| subject.delete(u['id']) } }
-  after{ subject.all.each{|u| subject.delete(u['id']) } }
+  before{ subject.all.each{|q| subject.delete(q['id']) } }
+  after{ subject.all.each{|q| subject.delete(q['id']) } }
 
   describe '.all' do
     context 'when there are no continuous queries' do
