@@ -98,9 +98,7 @@ describe 'continuous_queries', integration: true do
     end
 
     context 'when query exists' do
-      let(:continuous_query){ 'select MEAN(user) as user_mean from cpu group by time(1m) into cpu.1m.user_mean' }
-
-      before{ subject.create(continuous_query) }
+      before{ subject.create(continuous_query1) }
 
       it 'removes db and returns true' do
         expect(subject.delete(1)).to be_truthy
