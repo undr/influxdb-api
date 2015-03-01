@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe Influxdb::Api::Namespaces::ContinuousQueries do
+describe Influxdb::Api::Namespaces::ContinuousQueries::Api do
   let(:config){ Influxdb::Api::Configuration.new }
   let(:client){ Influxdb::Api::Client.new(config) }
 
-  subject{ Influxdb::Api::Namespaces::ContinuousQueries.new(client, 'dbname') }
+  subject{ Influxdb::Api::Namespaces::ContinuousQueries::Api.new(client, 'dbname') }
 
   describe '#all' do
     before do

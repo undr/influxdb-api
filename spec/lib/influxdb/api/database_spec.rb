@@ -19,9 +19,21 @@ describe Influxdb::Api::Namespaces do
   end
 
   describe '#continuous_queries' do
-    specify{ expect(subject.continuous_queries).to be_instance_of(Influxdb::Api::Namespaces::ContinuousQueries) }
+    let(:version){ 'InfluxDB v0.8.3 (git: 023abcdef) (leveldb: 1.8)' }
+
+    before{ expect(client).to receive(:version).and_return(Influxdb::Api::ServerVersion.new(version)) }
+
+    specify{ expect(subject.continuous_queries).to be_instance_of(Influxdb::Api::Namespaces::ContinuousQueries::Api) }
     specify{ expect(subject.continuous_queries.client).to eq(client) }
     specify{ expect(subject.continuous_queries.database_name).to eq('dbname') }
+
+    context 'when Influxdb version is more than 0.8.3' do
+      let(:version){ 'InfluxDB v0.8.4 (git: 023abcdef) (leveldb: 1.8)' }
+
+      specify{ expect(subject.continuous_queries).to be_instance_of(Influxdb::Api::Namespaces::ContinuousQueries::Sql) }
+      specify{ expect(subject.continuous_queries.client).to eq(client) }
+      specify{ expect(subject.continuous_queries.database_name).to eq('dbname') }
+    end
   end
 
   describe '#shard_spaces' do

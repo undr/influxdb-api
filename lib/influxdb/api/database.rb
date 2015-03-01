@@ -17,7 +17,11 @@ module Influxdb
       end
 
       def continuous_queries
-        @continuous_queries ||= Namespaces::ContinuousQueries.new(client, name)
+        @continuous_queries ||= if client.version > '0.8.3'
+          Namespaces::ContinuousQueries::Sql.new(client, name)
+        else
+          Namespaces::ContinuousQueries::Api.new(client, name)
+        end
       end
 
       def shard_spaces
