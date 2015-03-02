@@ -37,8 +37,24 @@ describe Influxdb::Api::Namespaces do
   end
 
   describe '#shard_spaces' do
-    specify{ expect(subject.shard_spaces).to be_instance_of(Influxdb::Api::Namespaces::ShardSpaces) }
-    specify{ expect(subject.shard_spaces.client).to eq(client) }
-    specify{ expect(subject.shard_spaces.database_name).to eq('dbname') }
+    before{ expect(client).to receive(:version).and_return(Influxdb::Api::ServerVersion.new(version)) }
+
+    context 'when Influxdb version is less than 0.8.3' do
+      let(:version){ 'InfluxDB v0.7.3 (git: 023abcdef) (leveldb: 1.8)' }
+
+      specify do
+        expect{ subject.shard_spaces }.to raise_error(
+          Influxdb::Api::UnsupportedFeature, "Shard space's API is supported only after 0.7.3 version. Current is 0.7.3"
+        )
+      end
+    end
+
+    context 'when Influxdb version is eaqual or more than 0.8.3' do
+      let(:version){ 'InfluxDB v0.8.3 (git: 023abcdef) (leveldb: 1.8)' }
+
+      specify{ expect(subject.shard_spaces).to be_instance_of(Influxdb::Api::Namespaces::ShardSpaces) }
+      specify{ expect(subject.shard_spaces.client).to eq(client) }
+      specify{ expect(subject.shard_spaces.database_name).to eq('dbname') }
+    end
   end
 end
