@@ -8,6 +8,7 @@ env:
   - INFLUXDB_VERSION=0.7.3
   - INFLUXDB_VERSION=0.8.3
   - INFLUXDB_VERSION=0.8.8
+  - INFLUXDB_VERSION=0.9.0
 before_install:
   - wget http://s3.amazonaws.com/influxdb/influxdb_${INFLUXDB_VERSION}_amd64.deb
   - sudo dpkg -i influxdb_${INFLUXDB_VERSION}_amd64.deb
@@ -16,4 +17,4 @@ before_install:
 matrix:
   allow_failures:
     - rvm: rbx-2
-    - env: "INFLUXDB_VERSION=0.8.8"
+    - env: "INFLUXDB_VERSION=0.9.0"
