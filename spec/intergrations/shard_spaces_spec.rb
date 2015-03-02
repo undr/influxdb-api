@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'shard_spaces', integration: true do
+describe 'shard_spaces', version: '>0.7.3', integration: true do
   let(:config){ Influxdb::Api::Configuration.new }
   let(:client){ Influxdb::Api::Client.new(config) }
   let(:shard_space){ {
