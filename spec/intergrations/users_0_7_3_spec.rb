@@ -11,10 +11,7 @@ describe 'users', version: '<0.8.0', integration: true do
     subject.all.each{|u| subject.delete(u['name']) }
   end
 
-  after do
-    subject.all.each{|u| subject.delete(u['name']) }
-    client.databases.delete('db_name')
-  end
+  after{ client.databases.delete('db_name') }
 
   describe '.all' do
     context 'when there are no users' do

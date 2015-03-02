@@ -15,10 +15,7 @@ describe 'continuous_queries', integration: true do
     subject.all.each{|q| subject.delete(q['id']) }
   end
 
-  after do
-    subject.all.each{|q| subject.delete(q['id']) }
-    client.databases.delete('db_name')
-  end
+  after{ client.databases.delete('db_name') }
 
   describe '.all' do
     context 'when there are no continuous queries' do

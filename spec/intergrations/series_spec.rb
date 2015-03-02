@@ -11,10 +11,7 @@ describe 'series', integration: true do
     subject.all.each{|name| subject.delete(name) }
   end
 
-  after do
-    subject.all.each{|name| subject.delete(name) }
-    client.databases.delete('db_name')
-  end
+  after{ client.databases.delete('db_name') }
 
   def series_data(name)
     name = name.to_s
