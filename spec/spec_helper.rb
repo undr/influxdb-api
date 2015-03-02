@@ -9,7 +9,7 @@ ensure
   WebMock.disable_net_connect!(allow_localhost: false)
 end
 
-version_resolver = allow_localhost{ VersionResolver.new(ENV['INFLUXDB_VERSION']) }
+version_resolver = allow_localhost{ VersionResolver.new }
 
 puts "InfluxDB: #{version_resolver.server_version}"
 
