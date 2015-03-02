@@ -25,7 +25,15 @@ module Influxdb
       end
 
       def shard_spaces
-        @shard_spaces ||= Namespaces::ShardSpaces.new(client, name)
+        @shard_spaces ||= begin
+          version = client.version
+          raise(
+            UnsupportedFeature,
+            "Shard space's API is supported only after 0.7.3 version. Current is #{version.to_s(:mini)}"
+          ) if version < '0.8.3'
+
+          Namespaces::ShardSpaces.new(client, name)
+        end
       end
     end
   end

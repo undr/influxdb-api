@@ -13,6 +13,9 @@ require_relative 'api/client'
 
 module Influxdb
   module Api
+    class Error < StandardError;end
+    class UnsupportedFeature < Error;end
+
     extend self
 
     attr_writer :client, :config

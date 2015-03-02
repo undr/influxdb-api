@@ -1,5 +1,19 @@
 require 'spec_helper'
 
+describe 'shard_spaces', version: '<=0.7.3', integration: true do
+  let(:config){ Influxdb::Api::Configuration.new }
+  let(:client){ Influxdb::Api::Client.new(config) }
+
+  before{ client.databases.create('db_name') }
+  after{ client.databases.delete('db_name') }
+
+  it 'raises error' do
+    expect{ client.databases('db_name').shard_spaces }.to raise_error(
+      Influxdb::Api::UnsupportedFeature, "Shard space's API is supported only after 0.7.3 version. Current is 0.7.3"
+    )
+  end
+end
+
 describe 'shard_spaces', version: '>0.7.3', integration: true do
   let(:config){ Influxdb::Api::Configuration.new }
   let(:client){ Influxdb::Api::Client.new(config) }
