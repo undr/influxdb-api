@@ -34,6 +34,13 @@ module Influxdb
 
         protected
 
+        def return_false_if_doesnt_exist(type)
+          yield
+        rescue Influxdb::Api::Client::Errors::BadRequest => e
+          raise e unless e.message =~ /#{type} (.*) doesn\'t exist/
+          false
+        end
+
         def resource_path(*args)
           [path_prefix, self.class._resource_path, path_postfix, args].compact.flatten.join(?/).squeeze(?/)
         end

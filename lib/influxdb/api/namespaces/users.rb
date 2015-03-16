@@ -17,10 +17,7 @@ module Influxdb
         end
 
         def delete(*_)
-          super
-        rescue Influxdb::Api::Client::Errors::BadRequest => e
-          raise e unless e.message =~ /User (.*) doesn\'t exist/
-          false
+          return_false_if_doesnt_exist('User'){ super }
         end
       end
     end
