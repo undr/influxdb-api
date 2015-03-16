@@ -42,7 +42,7 @@ describe 'shards', integration: true do
       expect(result['shortTerm'].size).to eq(2)
       expect(shard['startTime']).to eq(Time.now.to_i)
       expect(shard['endTime']).to eq(Time.now.to_i + 86400)
-      expect(shard['spaceName']).to eq('default')
+      expect(shard['spaceName']).to be_nil
       expect(shard['database']).to eq('db_name')
       expect(shard['serverIds']).to eq([1])
     end
