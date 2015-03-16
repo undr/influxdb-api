@@ -34,16 +34,17 @@ describe 'shards', integration: true do
       shards: [{ serverIds: [1] }],
       database: 'db_name'
     } }
+    let(:shard){ result['shortTerm'].sort_by{|v| v['id'] }.last }
 
     it 'creates new shard' do
       subject.create(attributes)
 
-      expect(result.size).to eq(2)
-      expect(result['shortTerm'][0]['startTime']).to eq(Time.now.to_i)
-      expect(result['shortTerm'][0]['endTime']).to eq(Time.now.to_i + 86400)
-      expect(result['shortTerm'][0]['spaceName']).to eq('default')
-      expect(result['shortTerm'][0]['database']).to eq('db_name')
-      expect(result['shortTerm'][0]['serverIds']).to eq([1])
+      expect(result['shortTerm'].size).to eq(2)
+      expect(shard['startTime']).to eq(Time.now.to_i)
+      expect(shard['endTime']).to eq(Time.now.to_i + 86400)
+      expect(shard['spaceName']).to eq('default')
+      expect(shard['database']).to eq('db_name')
+      expect(shard['serverIds']).to eq([1])
     end
   end
 
@@ -55,16 +56,17 @@ describe 'shards', integration: true do
       shards: [{ serverIds: [1] }],
       database: 'db_name'
     } }
+    let(:shard){ result.sort_by{|v| v['id'] }.last  }
 
     it 'creates new shard' do
       subject.create(attributes)
 
       expect(result.size).to eq(2)
-      expect(result[1]['startTime']).to eq(Time.now.to_i)
-      expect(result[1]['endTime']).to eq(Time.now.to_i + 86400)
-      expect(result[1]['spaceName']).to eq('default')
-      expect(result[1]['database']).to eq('db_name')
-      expect(result[1]['serverIds']).to eq([1])
+      expect(shard['startTime']).to eq(Time.now.to_i)
+      expect(shard['endTime']).to eq(Time.now.to_i + 86400)
+      expect(shard['spaceName']).to eq('default')
+      expect(shard['database']).to eq('db_name')
+      expect(shard['serverIds']).to eq([1])
     end
   end
 
