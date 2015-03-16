@@ -39,11 +39,11 @@ describe 'shards', integration: true do
       subject.create(attributes)
 
       expect(result.size).to eq(2)
-      expect(result['shortTerm'][1]['startTime']).to eq(Time.now.to_i)
-      expect(result['shortTerm'][1]['endTime']).to eq(Time.now.to_i + 86400)
-      expect(result['shortTerm'][1]['spaceName']).to eq('default')
-      expect(result['shortTerm'][1]['database']).to eq('db_name')
-      expect(result['shortTerm'][1]['serverIds']).to eq([1])
+      expect(result['shortTerm'][0]['startTime']).to eq(Time.now.to_i)
+      expect(result['shortTerm'][0]['endTime']).to eq(Time.now.to_i + 86400)
+      expect(result['shortTerm'][0]['spaceName']).to eq('default')
+      expect(result['shortTerm'][0]['database']).to eq('db_name')
+      expect(result['shortTerm'][0]['serverIds']).to eq([1])
     end
   end
 
