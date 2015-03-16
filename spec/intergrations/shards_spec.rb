@@ -26,7 +26,7 @@ describe 'shards', integration: true do
     end
   end
 
-  describe '.create', time_freeze: Time.now, version: '>0.7.3' do
+  describe '.create', time_freeze: Time.now, version: '<=0.7.3' do
     let(:attributes){ {
       startTime: Time.now,
       endTime: Time.now.to_i + 86400,
@@ -47,7 +47,7 @@ describe 'shards', integration: true do
     end
   end
 
-  describe '.create', time_freeze: Time.now, version: '<=0.7.3' do
+  describe '.create', time_freeze: Time.now, version: '>0.7.3' do
     let(:attributes){ {
       startTime: Time.now,
       endTime: Time.now.to_i + 86400,
