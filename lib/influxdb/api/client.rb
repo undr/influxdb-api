@@ -18,9 +18,13 @@ module Influxdb
         response = with_retry(path, params) do |connection, url|
           connection.basic_auth(config.user, config.password)
           headers = { 'Content-Type' => 'application/json' }
+          body = body ? convert_to_json(body) : nil
 
-          connection.run_request(method, url, (body ? convert_to_json(body) : nil), headers, &block)
+          logger.debug "=> #{method.upcase} #{url} #{body}" if logger
+          connection.run_request(method, url, body, headers, &block)
         end
+
+        logger.debug "<= [#{response.status}] #{response.body}" if logger
 
         raise_transport_error(response) if response.status.to_i >= 300
 
