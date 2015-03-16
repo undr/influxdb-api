@@ -15,13 +15,39 @@ describe 'shards', integration: true do
   after{ client.databases.delete('db_name') }
 
   describe '.all' do
-    it 'returns list of shards' do
+    it 'returns list of shards', version: '>0.7.3' do
       expect(result).to be_instance_of(Array)
+      expect(result).not_to be_empty
+    end
+
+    it 'returns list of shards', version: '<=0.7.3' do
+      expect(result).to be_instance_of(Hash)
       expect(result).not_to be_empty
     end
   end
 
-  describe '.create', time_freeze: Time.now do
+  describe '.create', time_freeze: Time.now, version: '>0.7.3' do
+    let(:attributes){ {
+      startTime: Time.now,
+      endTime: Time.now.to_i + 86400,
+      spaceName: 'default',
+      shards: [{ serverIds: [1] }],
+      database: 'db_name'
+    } }
+
+    it 'creates new shard' do
+      subject.create(attributes)
+
+      expect(result.size).to eq(2)
+      expect(result['shortTerm'][1]['startTime']).to eq(Time.now.to_i)
+      expect(result['shortTerm'][1]['endTime']).to eq(Time.now.to_i + 86400)
+      expect(result['shortTerm'][1]['spaceName']).to eq('default')
+      expect(result['shortTerm'][1]['database']).to eq('db_name')
+      expect(result['shortTerm'][1]['serverIds']).to eq([1])
+    end
+  end
+
+  describe '.create', time_freeze: Time.now, version: '<=0.7.3' do
     let(:attributes){ {
       startTime: Time.now,
       endTime: Time.now.to_i + 86400,
